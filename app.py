@@ -8,7 +8,21 @@ st.set_page_config(page_title="IMA I20 AI Support System", layout="wide")
 
 # Google Sheets Setup
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-CREDS = ServiceAccountCredentials.from_json_keyfile_name("google_credentials.json", SCOPE)
+from google.oauth2.service_account import Credentials
+import gspread
+import streamlit as st
+
+# Load credentials from Streamlit Secrets
+creds_dict = st.secrets["google_service_account"]
+creds = Credentials.from_service_account_info(creds_dict)
+
+# Authorize with gspread
+gc = gspread.authorize(creds)
+
+# Open your sheet by URL
+sheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1GjfnGfWaE6dDtNU9fCjK9SRz8MWXlxTNaYip0Fctu70")
+worksheet = sheet.sheet1
+
 CLIENT = gspread.authorize(CREDS)
 SHEET = CLIENT.open_by_url("https://docs.google.com/spreadsheets/d/1GjfnGfWaE6dDtNU9fCjK9SRz8MWXlxTNaYip0Fctu70")
 worksheet = SHEET.sheet1
